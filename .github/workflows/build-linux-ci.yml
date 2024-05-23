@@ -8,12 +8,6 @@ on:
       branch:
         type: string
         default: '${{ github.ref_name }}'
-      repo_access_token:
-        type: string
-        default: ''
-      debug_artifact_token:
-        type: string
-        default: ''
 
 concurrency:
   group: environment-lin-${{ github.ref }}
@@ -58,10 +52,10 @@ jobs:
         uses: Silverlan/pragma/github_actions/build_generic_module@main
         with:
           module: '${{ steps.module-info.outputs.module_name }}'
-          token: '${{ env.repo_access_token }}'
+          token: '' # '${{ env.repo_access_token }}'
           repository: '${{ env.debug_artifact_token }}'
           ref: '${{ inputs.branch }}'
-          debug-artifact-token: ${{ secrets.GITHUB_TOKEN }}
+          debug-artifact-token: '' # ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create Release Files
         shell: bash
