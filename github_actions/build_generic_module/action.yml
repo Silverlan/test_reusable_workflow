@@ -28,7 +28,7 @@ inputs:
   token:
     description: 'PAT token required to fetch the repository.'
     required: true
-    default: '' # '${{ github.token }}'
+    default: '${{ github.token }}'
   debug-artifact-token:
     description: 'Token required for upload of debug artifacts (e.g. CMakeCache.txt).'
     required: true
@@ -81,7 +81,7 @@ runs:
       with:
         submodules: 'recursive'
         path: 'pragma/modules/${{ inputs.module }}'
-        token: '${{ inputs.token }}'
+        token: null # '${{ inputs.token }}'
         repository: '${{ inputs.repository }}'
         ref: ${{ inputs.ref }}
 
