@@ -52,7 +52,7 @@ jobs:
         uses: Silverlan/test_reusable_workflow/github_actions/build_generic_module@main
         with:
           module: '${{ steps.module-info.outputs.module_name }}'
-          token: '123' # '${{ env.repo_access_token }}'
+          token: '' # '${{ env.repo_access_token }}'
           repository: '${{ inputs.repository }}'
           ref: '${{ inputs.branch }}'
           debug-artifact-token: '456' # ${{ secrets.GITHUB_TOKEN }}
