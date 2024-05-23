@@ -5,10 +5,11 @@ on:
       repository:
         required: true
         type: string
+        default: '${{ github.repository }}'
       branch:
         required: true
         type: string
-        default: 'main'
+        default: '${{ github.ref_name }}'
 
 concurrency:
   group: environment-win-${{ github.ref }}
