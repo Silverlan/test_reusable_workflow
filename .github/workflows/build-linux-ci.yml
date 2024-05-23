@@ -32,21 +32,6 @@ jobs:
           repo_access_token: '${{ secrets.REPO_ACCESS_TOKEN }}'
           repository: '${{ inputs.repository }}/${{ inputs.branch }}'
 
-      - name: Set token
-        id: set-token
-        run: |
-          if [ -z "${{ secrets.REPO_ACCESS_TOKEN }}" ]; then
-            echo "repo_access_token="
-          else
-            echo "repo_access_token=${{ secrets.REPO_ACCESS_TOKEN }}"
-          fi >> $GITHUB_ENV
-
-          if [ -z "${{ secrets.GITHUB_TOKEN }}" ]; then
-            echo "debug_artifact_token="
-          else
-            echo "debug_artifact_token=${{ secrets.REPO_ACCESS_TOKEN }}"
-          fi >> $GITHUB_ENV
-
       - name: Build Module
         id: build-module
         uses: Silverlan/test_reusable_workflow/github_actions/build_generic_module@main
@@ -55,7 +40,7 @@ jobs:
           token: '' # '${{ env.repo_access_token }}'
           repository: '${{ inputs.repository }}'
           ref: '${{ inputs.branch }}'
-          debug-artifact-token: '456' # ${{ secrets.GITHUB_TOKEN }}
+          debug-artifact-token: '' # ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create Release Files
         shell: bash
