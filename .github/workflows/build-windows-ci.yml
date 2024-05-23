@@ -3,11 +3,9 @@ on:
   workflow_call:
     inputs:
       repository:
-        required: true
         type: string
         default: '${{ github.repository }}'
       branch:
-        required: true
         type: string
         default: '${{ github.ref_name }}'
 
