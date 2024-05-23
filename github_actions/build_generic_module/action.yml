@@ -53,7 +53,7 @@ runs:
         clone_url: "https://github.com/Silverlan/pragma.git"
 
     - name: Build Pragma
-      uses: Silverlan/pragma/github_actions/build
+      uses: Silverlan/pragma/github_actions/build@main
       id: build-pragma
       with:
         build-args: "--with-pfm --with-all-pfm-modules --with-vr --with-lua-debugger=0"
