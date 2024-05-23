@@ -74,8 +74,6 @@ runs:
         fi
         echo "build-args=$build_args" >> $GITHUB_OUTPUT
 
-        echo "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-
     - name: Set token
       shell: bash
       id: set-token
@@ -109,7 +107,6 @@ runs:
       if: always()
       id: set-output-vars
       run: |
-        echo "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
         echo "build-dir=${{ steps.build-pragma.outputs.build-dir }}" >> $GITHUB_OUTPUT
         echo "deps-dir=${{ steps.build-pragma.outputs.deps-dir }}" >> $GITHUB_OUTPUT
         echo "install-dir=${{ steps.build-pragma.outputs.install-dir }}" >> $GITHUB_OUTPUT

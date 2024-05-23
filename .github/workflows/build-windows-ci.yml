@@ -34,13 +34,13 @@ jobs:
 
       - name: Build Module
         id: build-module
-        uses: Silverlan/pragma/github_actions/build_generic_module@main
+        uses: Silverlan/test_reusable_workflow/github_actions/build_generic_module@main
         with:
           module: '${{ steps.module-info.outputs.module_name }}'
           token: '${{ secrets.REPO_ACCESS_TOKEN }}'
           repository: '${{ inputs.repository }}'
           ref: '${{ inputs.branch }}'
-          debug-artifact-token: ${{ secrets.GITHUB_TOKEN }}
+          debug-artifact-token: '${{ secrets.GITHUB_TOKEN }}'
 
       - name: Create Release Files
         shell: bash
