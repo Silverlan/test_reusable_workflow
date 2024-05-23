@@ -1,0 +1,112 @@
+name: Build Generic Module
+description: 'Build Generic Module'
+inputs:
+  module:
+    description: 'Module name'
+    required: true
+  build-config:
+    description: 'The build configuration to use.'
+    required: true
+    default: "RelWithDebInfo"
+  build-args:
+    description: 'Module Build arguments'
+    required: true
+    default: ""
+  with-cuda:
+    description: 'Install CUDA?'
+    required: true
+    default: '0'
+  repository:
+    description: 'Module repository name with owner.'
+    required: true
+    default: '${{ github.repository }}'
+  ref:
+    description: >
+      The branch, tag or SHA to checkout. When checking out the repository that
+      triggered a workflow, this defaults to the reference or SHA for that
+      event.  Otherwise, uses the default branch.
+  token:
+    description: 'PAT token required to fetch the repository.'
+    required: true
+    default: '${{ github.token }}'
+  debug-artifact-token:
+    description: 'Token required for upload of debug artifacts (e.g. CMakeCache.txt).'
+    required: true
+    default: ''
+outputs:
+  build-dir:
+    description: 'The directory where the build files are written to.'
+    value: ${{ steps.set-output-vars.outputs.build-dir }}
+  deps-dir:
+    description: 'The directory where the dependencies are written to.'
+    value: ${{ steps.set-output-vars.outputs.deps-dir }}
+  install-dir:
+    description: 'The directory where the installation files are written to.'
+    value: ${{ steps.set-output-vars.outputs.install-dir }}
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Pragma
+      uses: Silverlan/pragma/github_actions/setup@main
+      with:
+        with_cuda: ${{ inputs.with-cuda }}
+
+    # We need the latest Windows SDK
+    - name: Install Windows SDK
+      if: runner.os == 'Windows'
+      uses: GuillaumeFalourd/setup-windows10-sdk-action@v1.11
+      with:
+        sdk-version: 22621
+
+    - name: Set Build and CMake Arguments
+      shell: bash
+      id: set-cmake-args
+      run: |
+        if [ "$RUNNER_OS" == "Linux" ]; then
+          echo "cmake-args=\"\"" >> $GITHUB_OUTPUT
+        else
+          echo "cmake-args=\"-DCMAKE_SYSTEM_VERSION=10.0.22621.0\"" >> $GITHUB_OUTPUT
+        fi
+
+        build_args="${{ inputs.build-args }}"
+        if [ -z "$build_args" ]; then
+          build_args="--module ${{ inputs.module }}"
+        fi
+        echo "build-args=$build_args" >> $GITHUB_OUTPUT
+
+        echo "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+
+    - name: "Download Module"
+      uses: actions/checkout@v4
+      with:
+        submodules: 'recursive'
+        path: 'pragma/modules/${{ inputs.module }}'
+        token: '${{ inputs.token }}'
+        repository: '${{ inputs.repository }}'
+        ref: ${{ inputs.ref }}
+
+    - name: Build Pragma
+      id: build-pragma
+      uses: Silverlan/pragma/github_actions/build@main
+      with:
+        build-args: '--with-lua-debugger=0 --with-common-modules=0 --with-essential-client-modules=0 --cmake-arg=${{ steps.set-cmake-args.outputs.cmake-args }} ${{ steps.set-cmake-args.outputs.build-args }}'
+
+    - name: Set Output Variables
+      shell: bash
+      if: always()
+      id: set-output-vars
+      run: |
+        echo "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+        echo "build-dir=${{ steps.build-pragma.outputs.build-dir }}" >> $GITHUB_OUTPUT
+        echo "deps-dir=${{ steps.build-pragma.outputs.deps-dir }}" >> $GITHUB_OUTPUT
+        echo "install-dir=${{ steps.build-pragma.outputs.install-dir }}" >> $GITHUB_OUTPUT
+
+    - name: Upload Debug Artifacts
+      if: ${{ !cancelled() && inputs.debug-artifact-token != '' }}
+      uses: Silverlan/pragma/github_actions/upload_debug_artifacts@main
+      with:
+        token: ${{ inputs.debug-artifact-token }}
+        commit: ${{ github.ref_name }}
+        build-dir: '${{ steps.build-pragma.outputs.build-dir }}'
+        deps-dir: '${{ steps.build-pragma.outputs.deps-dir }}'
+        install-dir: '${{ steps.build-pragma.outputs.install-dir }}'

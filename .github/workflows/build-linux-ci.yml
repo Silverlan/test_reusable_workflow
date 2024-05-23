@@ -49,7 +49,7 @@ jobs:
 
       - name: Build Module
         id: build-module
-        uses: Silverlan/pragma/github_actions/build_generic_module@main
+        uses: Silverlan/test_reusable_workflow/github_actions/build_generic_module@main
         with:
           module: '${{ steps.module-info.outputs.module_name }}'
           token: '123' # '${{ env.repo_access_token }}'
