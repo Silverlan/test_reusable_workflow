@@ -8,6 +8,12 @@ on:
       branch:
         type: string
         default: '${{ github.ref_name }}'
+      repo_access_token:
+        type: string
+        default: ''
+      debug_artifact_token:
+        type: string
+        default: ''
 
 concurrency:
   group: environment-lin-${{ github.ref }}
