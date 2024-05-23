@@ -28,7 +28,7 @@ inputs:
   token:
     description: 'PAT token required to fetch the repository.'
     required: true
-    default: ${{ github.token }}
+    default: ''
   debug-artifact-token:
     description: 'Token required for upload of debug artifacts (e.g. CMakeCache.txt).'
     required: true
@@ -82,14 +82,11 @@ runs:
       run: |
         token = "${{ inputs.token }}"
         if [ -z $token ]; then
-          token = ${{ inputs.token }}
+          token = ${{ github.token }}
         fi
         echo "token=$token" >> $GITHUB_OUTPUT
 
         debug_artifact_token = "${{ inputs.debug-artifact-token }}"
-        if [ -z $debug_artifact_token ]; then
-          debug_artifact_token = ${{ inputs.inputs.debug-artifact-token }}
-        fi
         echo "debug_artifact_token=$debug_artifact_token" >> $GITHUB_OUTPUT
 
     - name: "Download Module"
