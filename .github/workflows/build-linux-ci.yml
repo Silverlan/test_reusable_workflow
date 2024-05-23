@@ -52,10 +52,10 @@ jobs:
         uses: Silverlan/pragma/github_actions/build_generic_module@main
         with:
           module: '${{ steps.module-info.outputs.module_name }}'
-          token: '' # '${{ env.repo_access_token }}'
+          token: '123' # '${{ env.repo_access_token }}'
           repository: '${{ env.debug_artifact_token }}'
           ref: '${{ inputs.branch }}'
-          debug-artifact-token: '' # ${{ secrets.GITHUB_TOKEN }}
+          debug-artifact-token: '456' # ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create Release Files
         shell: bash
